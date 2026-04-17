@@ -31,7 +31,7 @@ generate a complete, shareable storefront.
 - ✅ Week 1: JavaScript fundamentals
 - ✅ Week 2: React basics + StoreFront component
 - ✅ Week 3: Voice input + AI parsing pipeline
-- 🔄 Week 4: Polish + mobile layout (in progress)
+- ✅ Week 4: Polish + mobile layout 
 
 ## Local Setup
 ```bash
