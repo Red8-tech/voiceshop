@@ -1,9 +1,9 @@
 import { useState } from "react"
-import ProductCard from "./components/ProductCard"
 import StoreFront from "./components/StoreFront"
 import VoiceInput from "./components/VoiceInput"
 import StatusBar from "./components/StatusBar"
 import { parseShopFromText } from "./utils/parseShop"
+import SkeletonStoreFront from "./components/SkeletonStoreFront"
 
 const defaultShop = {
   name: "Your shop name",
@@ -20,12 +20,14 @@ function App() {
   const [status, setStatus] = useState("")
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [isEditing, setIsEditing] = useState(true)
 
   const handleTranscript = async (transcript) => {
     if (!transcript.trim()) return
 
     setLoading(true)
     setError(null)
+    setIsEditing(false)
     setStatus("AI is reading your description...")
 
     try {
@@ -35,6 +37,7 @@ function App() {
     } catch(err) {
       setError(err.message)
       setStatus("")
+      setIsEditing(true)
     } finally {
       setLoading(false)
     }
@@ -46,12 +49,28 @@ function App() {
       background: "#f5f5f5",
       fontFamily: "sans-serif"
     }}>
-      <VoiceInput
-      onTranscript={handleTranscript}
-      disabled={loading}
-      />
+
+      {/* Show mic only when editing */}
+      {isEditing && (
+        <VoiceInput
+          onTranscript={handleTranscript}
+          disabled={loading}
+        />
+      )}
+
+      {/* Status / error */}
       <StatusBar status={status} error={error}/>
-      <StoreFront shop={shop}/>
+
+      {/* Skeleton while loading, StoreFront when ready */}
+      {loading
+        ? <SkeletonStoreFront/>
+        : !isEditing && (
+          <StoreFront
+            shop={shop}
+            onEdit={() => setIsEditing(true)}
+          />
+        )
+      }
     </div>
   )
 }
